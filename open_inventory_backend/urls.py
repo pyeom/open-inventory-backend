@@ -16,7 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from ninja import NinjaAPI, Schema
+from open_inventory_backend.models import *
+#from open_inventory_backend import utils
+
+api = NinjaAPI()
+
+@api.get("/hello")
+def hello(request):
+    return "Hello world!"
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', api.urls),
 ]
