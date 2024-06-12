@@ -33,13 +33,13 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'corsheaders',
+    'open_inventory_backend',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'open_inventory_backend'
 ]
 
 MIDDLEWARE = [
@@ -124,7 +124,7 @@ USE_TZ = True
 
 # Cors
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL=True
 
 
 # Static files (CSS, JavaScript, Images)

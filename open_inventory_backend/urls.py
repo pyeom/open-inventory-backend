@@ -17,56 +17,53 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from ninja import NinjaAPI, Schema
+from ninja.errors import HttpError
 from open_inventory_backend.models import *
 from .models import Prestamo
 #from open_inventory_backend import utils
+from datetime import datetime, timedelta, time, date
 
 api = NinjaAPI()
+
+class Item(Schema):
+    name: str
+    codigo: str
+    costo: int
+    estado: bool
+
+class Detail(Schema):
+    message: str
+
+class PushItem(Schema):
+    codigo: str
+    name: str
+    estado: bool
+    costo: int
 
 @api.get("/hello")
 def hello(request):
     return "Hello world!"
 
-""" @api.get("/inventory/")
+# Todos los artículos del inventario
+@api.get("/inventario")
 def get_inventory(request):
-    # Your logic to retrieve inventory items goes here
-    # Return a list of inventory items
-    return {"message": "List of inventory items"}
- """
+    return Inventario.objects.all()
 
-""" @api.post("/prestar-item/")
-def crear_prestamo(request):
-    item_id = request.data.get('item_id')
-    borrower_id = request.data.get('borrower_id')
-    fecha_prestamo = request.data.get('fecha_prestamo')
-    is_paid = request.data.get('is_paid')
-    fee = request.data.get('fee')
+@api.post("/inventario")
+def add_item(request, payload: PushItem):
+    try:
+        item = Inventario.objects.create(**payload.dict())
+    except Exception as e:
+        raise HttpError(400, str(e))
 
-    # Your logic to create the lending transaction goes here
-    # Example: Create a new LendingTransaction object in the database
 
-    # Return a success message or relevant data
-    return {"message": "Lending transaction created successfully"}
- """
-""" @api.get("/prestar-item")
-def get_lending_transactions(request):
-    # Your logic to retrieve lending transactions goes here
-    # Return a list of lending transactions
-    return {"message": "List of lending transactions"}
- """
-""" @api.post("/prestar-item/{prestamo-id}")
-def devolver_item(request, prestamo_id: int):
-    # Your logic to mark the lending transaction as returned goes here
-    # Example: Update the LendingTransaction object in the database
+    return 200, {
+        "name": item.name,
+        "codigo": item.codigo,
+        "costo": item.costo,
+        "estado": item.estado
+    }
 
-    # Return a success message or relevant data
-    return {"message": "Item returned successfully"}
- """
-""" @api.get("/prestamos/")
-def get_all_transactions(request):
-    transactions = Prestamo.objects.all()
-    # You can customize the data returned (e.g., select specific fields)
-    return {"transactions": transactions} """
 
 urlpatterns = [
     path('admin/', admin.site.urls),
